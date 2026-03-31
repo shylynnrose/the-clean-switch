@@ -7,6 +7,15 @@ const geist = Geist({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "The Clean Switch",
   description: "Vetted non-toxic swaps for every room in your home.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "The Clean Switch",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export default function RootLayout({
