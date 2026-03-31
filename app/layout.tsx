@@ -28,11 +28,13 @@ export default function RootLayout({
       <body className={`${geist.className} min-h-full bg-stone-50`}>
         <header className="bg-white border-b border-stone-100 sticky top-0 z-10">
           <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2">
               <span className="text-2xl">🌿</span>
               <span className="font-semibold text-xl text-stone-800">The Clean Switch</span>
-            </div>
-            <p className="text-sm text-stone-500 hidden sm:block">Vetted non-toxic swaps for every room</p>
+            </a>
+            <a href="/scan" className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors flex items-center gap-1.5">
+              <span>📷</span> Scan Product
+            </a>
           </div>
         </header>
         {children}
