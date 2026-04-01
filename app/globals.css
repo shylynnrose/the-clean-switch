@@ -18,3 +18,9 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
+
+@media (min-width: 640px) {
+  .why-link {
+    display: block !important;
+  }
+}
