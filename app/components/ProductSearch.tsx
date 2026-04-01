@@ -220,37 +220,21 @@ export default function ProductSearch({ products }: { products: Product[] }) {
   return (
     <div style={{ background: C.bg, minHeight: '100vh' }}>
 
-      {/* Hero */}
-      <div style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: '80px 24px' }}>
+      {/* Search */}
+      <div style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: '24px 24px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a9e7a', marginBottom: 16 }}>
-            Researched · Vetted · Clean
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 80, flexWrap: 'wrap' }}>
-            <h1 style={{
-              fontFamily: 'Georgia, serif', fontSize: 56, fontWeight: 700,
-              color: C.text, lineHeight: 1.1, margin: 0, flex: '0 0 auto',
-            }}>
-              Your clean<br />home starts<br />here.
-            </h1>
-            <div style={{ flex: 1, minWidth: 280 }}>
-              <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.7, marginBottom: 20 }}>
-                Every product has been researched and vetted. No greenwashing, no guesswork — just honest swaps for every room.
-              </p>
-              <input
-                type="text"
-                placeholder="Search by product, brand, or category..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{
-                  width: '100%', padding: '14px 18px', borderRadius: 10,
-                  border: `1px solid ${C.border}`, background: C.bg,
-                  color: C.text, fontSize: 14, outline: 'none',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
-          </div>
+          <input
+            type="text"
+            placeholder="Search by product, brand, or category..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: '100%', padding: '14px 18px', borderRadius: 10,
+              border: `1px solid ${C.border}`, background: C.bg,
+              color: C.text, fontSize: 14, outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
       </div>
 

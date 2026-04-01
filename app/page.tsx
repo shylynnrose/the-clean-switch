@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import type { Product } from '@/lib/supabase'
 import ProductSearch from './components/ProductSearch'
+import Hero from './components/Hero'
 
 export default async function Home() {
   const { data: products, error } = await supabase
@@ -14,6 +15,7 @@ export default async function Home() {
 
   return (
     <main>
+      <Hero />
       <ProductSearch products={(products as Product[]) ?? []} />
     </main>
   )
