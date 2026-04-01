@@ -3,6 +3,83 @@
 import { useState } from 'react'
 import type { Product } from '@/lib/supabase'
 
+function EmailSignup() {
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'exists'>('idle')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email) return
+    setStatus('loading')
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (data.success) setStatus('success')
+      else if (data.error === 'already_subscribed') setStatus('exists')
+      else setStatus('error')
+    } catch {
+      setStatus('error')
+    }
+  }
+
+  return (
+    <div style={{ background: '#3d4a35', padding: '64px 24px' }}>
+      <div style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center' }}>
+        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8ab08a', marginBottom: 12 }}>
+          Stay in the loop
+        </p>
+        <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 32, fontWeight: 700, color: '#fff', margin: '0 0 12px', lineHeight: 1.2 }}>
+          Get clean swap ideas straight to your inbox
+        </h2>
+        <p style={{ fontSize: 14, color: '#b5c9b0', marginBottom: 28, lineHeight: 1.6 }}>
+          New vetted swaps, ingredient warnings, and non-toxic living tips — no spam, ever.
+        </p>
+        {status === 'success' ? (
+          <div style={{ background: 'rgba(255,255,255,0.1)', borderRadius: 12, padding: '18px 24px', color: '#d4edda', fontSize: 15, fontWeight: 500 }}>
+            You&apos;re on the list! Welcome to The Clean Switch.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <input
+              type="email"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{
+                flex: 1, minWidth: 220, padding: '14px 18px', borderRadius: 10,
+                border: 'none', background: 'rgba(255,255,255,0.12)',
+                color: '#fff', fontSize: 14, outline: 'none',
+              }}
+            />
+            <button
+              type="submit"
+              disabled={status === 'loading'}
+              style={{
+                background: '#fff', color: '#3d4a35', border: 'none',
+                borderRadius: 10, padding: '14px 24px',
+                fontSize: 14, fontWeight: 700, cursor: 'pointer', flexShrink: 0,
+              }}
+            >
+              {status === 'loading' ? 'Joining...' : 'Join the list'}
+            </button>
+          </form>
+        )}
+        {status === 'exists' && (
+          <p style={{ fontSize: 13, color: '#b5c9b0', marginTop: 10 }}>You&apos;re already subscribed!</p>
+        )}
+        {status === 'error' && (
+          <p style={{ fontSize: 13, color: '#ffb3b3', marginTop: 10 }}>Something went wrong. Please try again.</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
 const CATEGORIES = ['All', 'Kitchen', 'Bathroom', 'Laundry', 'Bedroom', 'Baby', 'Cleaning']
 
 const C = {
@@ -200,6 +277,7 @@ export default function ProductSearch({ products }: { products: Product[] }) {
 
       {/* Grid */}
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 60px' }}>
+
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <p style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.stone }}>No swaps found.</p>
@@ -222,6 +300,7 @@ export default function ProductSearch({ products }: { products: Product[] }) {
           </>
         )}
       </div>
+      <EmailSignup />
     </div>
   )
 }
