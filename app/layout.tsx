@@ -35,10 +35,7 @@ export default function RootLayout({
                 The Clean Switch
               </span>
             </a>
-            <nav style={{ display: 'flex', alignItems: 'center', gap: 20, flexShrink: 0 }}>
-              <a href="/" className="hidden sm:block" style={{ fontSize: 14, fontWeight: 500, color: '#7a7060', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                Shop Swaps
-              </a>
+            <nav style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
               <a href="/scan" style={{ fontSize: 14, fontWeight: 600, background: '#3d4a35', color: '#fff', padding: '9px 18px', borderRadius: 99, textDecoration: 'none', whiteSpace: 'nowrap' }}>
                 Scan Product
               </a>
