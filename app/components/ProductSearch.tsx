@@ -5,61 +5,121 @@ import type { Product } from '@/lib/supabase'
 
 const CATEGORIES = ['All', 'Kitchen', 'Bathroom', 'Laundry', 'Bedroom', 'Baby', 'Cleaning']
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <span key={star} className={star <= rating ? 'text-amber-400' : 'text-stone-200'}>
-          ★
-        </span>
-      ))}
-    </div>
-  )
+const C = {
+  bg: '#f8f7f4',
+  white: '#ffffff',
+  olive: '#3d4a35',
+  oliveMid: '#5a6b50',
+  sagePale: '#eef2eb',
+  stone: '#7a7060',
+  stonePale: '#f0ede8',
+  border: '#e8e5df',
+  text: '#1c1917',
+  muted: '#a09880',
 }
 
 function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-stone-100 overflow-hidden hover:shadow-md transition-shadow">
-      {product.image_url && (
-        <div className="h-44 bg-stone-50 overflow-hidden">
+    <div style={{
+      background: C.white,
+      border: `1px solid ${C.border}`,
+      borderRadius: 16,
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
+      {/* Image area */}
+      <div style={{
+        width: '100%',
+        height: 220,
+        background: C.stonePale,
+        position: 'relative',
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}>
+        {product.image_url ? (
           <img
             src={product.image_url}
             alt={product.name}
-            className="w-full h-full object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
-        </div>
-      )}
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-2 mb-1">
-          <div>
-            <p className="text-xs font-medium text-emerald-600 uppercase tracking-wide">{product.category}</p>
-            <h3 className="font-semibold text-stone-800 text-lg leading-tight">{product.name}</h3>
-            {product.brand && <p className="text-sm text-stone-400">{product.brand}</p>}
+        ) : (
+          <div style={{
+            width: '100%', height: '100%',
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center', gap: 4,
+          }}>
+            <span style={{ fontFamily: 'Georgia, serif', fontSize: 36, fontWeight: 700, color: C.oliveMid }}>
+              {product.brand?.charAt(0) || product.name.charAt(0)}
+            </span>
+            <span style={{ fontSize: 11, color: C.muted }}>{product.brand}</span>
           </div>
-          <StarRating rating={product.rating} />
-        </div>
-
-        {product.description && (
-          <p className="text-stone-600 text-sm mt-2 mb-3">{product.description}</p>
         )}
+        <div style={{
+          position: 'absolute', top: 12, left: 12,
+          background: 'rgba(255,255,255,0.92)',
+          borderRadius: 99, padding: '3px 10px',
+          fontSize: 10, fontWeight: 700,
+          letterSpacing: '0.08em', textTransform: 'uppercase',
+          color: C.olive,
+        }}>
+          {product.category}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{
+        padding: '16px 20px 20px',
+        display: 'flex', flexDirection: 'column', flex: 1,
+      }}>
+        <div style={{ fontFamily: 'Georgia, serif', fontSize: 18, fontWeight: 700, color: C.text, lineHeight: 1.3, marginBottom: 2 }}>
+          {product.name}
+        </div>
+        <div style={{ fontSize: 13, color: C.muted, marginBottom: 12 }}>
+          {product.brand}
+        </div>
 
         {product.why_its_clean && (
-          <div className="bg-emerald-50 rounded-xl px-3 py-2 mb-4">
-            <p className="text-xs font-medium text-emerald-700 mb-0.5">Why it&apos;s clean</p>
-            <p className="text-xs text-emerald-600">{product.why_its_clean}</p>
+          <div style={{
+            background: C.sagePale, borderRadius: 10,
+            padding: '10px 12px', marginBottom: 14,
+          }}>
+            <div style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: C.oliveMid, marginBottom: 3 }}>
+              Why it&apos;s clean
+            </div>
+            <div style={{ fontSize: 12, color: C.oliveMid, lineHeight: 1.5 }}>
+              {product.why_its_clean}
+            </div>
           </div>
         )}
 
-        {product.affiliate_link && (
-          <a
-            href={product.affiliate_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full text-center bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2.5 rounded-xl transition-colors"
-          >
-            Shop This Swap →
-          </a>
-        )}
+        <div style={{ marginTop: 'auto' }}>
+          {product.affiliate_link ? (
+            <a
+              href={product.affiliate_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'block', width: '100%', textAlign: 'center',
+                background: C.olive, color: '#fff',
+                padding: '11px 0', borderRadius: 10,
+                fontSize: 13, fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              Shop This Swap
+            </a>
+          ) : (
+            <div style={{
+              display: 'block', width: '100%', textAlign: 'center',
+              background: C.stonePale, color: C.stone,
+              padding: '11px 0', borderRadius: 10,
+              fontSize: 13, fontWeight: 500,
+            }}>
+              Coming Soon
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -74,46 +134,63 @@ export default function ProductSearch({ products }: { products: Product[] }) {
       search === '' ||
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.description?.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase())
-
+      p.category.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand?.toLowerCase().includes(search.toLowerCase())
     const matchesCategory = activeCategory === 'All' || p.category === activeCategory
-
     return matchesSearch && matchesCategory
   })
 
   return (
-    <div style={{backgroundColor: '#fafaf9', minHeight: '100vh'}}>
+    <div style={{ background: C.bg, minHeight: '100vh' }}>
+
       {/* Hero */}
-      <div className="bg-white border-b border-stone-100 py-10 px-6">
-        <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-stone-800 mb-3">
-            Find your clean swap
-          </h1>
-          <p className="text-stone-500 mb-6 max-w-lg mx-auto">
-            Every product here has been researched and vetted. No greenwashing, no guesswork.
-          </p>
-          <input
-            type="text"
-            placeholder="Search swaps... e.g. shampoo, laundry, deodorant"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full max-w-xl mx-auto block px-5 py-3.5 rounded-2xl border border-stone-200 shadow-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-          />
+      <div style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: '80px 24px' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#8a9e7a', marginBottom: 16 }}>
+            Researched · Vetted · Clean
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end', gap: 80, flexWrap: 'wrap' }}>
+            <h1 style={{
+              fontFamily: 'Georgia, serif', fontSize: 56, fontWeight: 700,
+              color: C.text, lineHeight: 1.1, margin: 0, flex: '0 0 auto',
+            }}>
+              Your clean<br />home starts<br />here.
+            </h1>
+            <div style={{ flex: 1, minWidth: 280 }}>
+              <p style={{ fontSize: 15, color: C.stone, lineHeight: 1.7, marginBottom: 20 }}>
+                Every product has been researched and vetted. No greenwashing, no guesswork — just honest swaps for every room.
+              </p>
+              <input
+                type="text"
+                placeholder="Search by product, brand, or category..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{
+                  width: '100%', padding: '14px 18px', borderRadius: 10,
+                  border: `1px solid ${C.border}`, background: C.bg,
+                  color: C.text, fontSize: 14, outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Category Filters */}
-      <div className="max-w-5xl mx-auto px-6 py-6">
-        <div className="flex gap-2 flex-wrap">
+      {/* Filters */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 24px 0' }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                activeCategory === cat
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-white text-stone-600 border border-stone-200 hover:border-emerald-300'
-              }`}
+              style={{
+                padding: '8px 18px', borderRadius: 99, fontSize: 13, fontWeight: 500,
+                cursor: 'pointer', border: 'none',
+                background: activeCategory === cat ? C.olive : C.white,
+                color: activeCategory === cat ? '#fff' : C.stone,
+                outline: activeCategory === cat ? 'none' : `1px solid ${C.border}`,
+              }}
             >
               {cat}
             </button>
@@ -121,17 +198,23 @@ export default function ProductSearch({ products }: { products: Product[] }) {
         </div>
       </div>
 
-      {/* Products Grid */}
-      <div className="max-w-5xl mx-auto px-6 pb-10">
+      {/* Grid */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 24px 60px' }}>
         {filtered.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-4xl mb-3">🌿</p>
-            <p className="text-stone-500">No swaps found. Try a different search!</p>
+          <div style={{ textAlign: 'center', padding: '80px 0' }}>
+            <p style={{ fontFamily: 'Georgia, serif', fontSize: 22, color: C.stone }}>No swaps found.</p>
+            <p style={{ fontSize: 13, color: C.muted, marginTop: 4 }}>Try a different search or category.</p>
           </div>
         ) : (
           <>
-            <p className="text-sm text-stone-400 mb-4">{filtered.length} swap{filtered.length !== 1 ? 's' : ''} found</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <p style={{ fontSize: 13, color: C.muted, marginBottom: 20 }}>
+              {filtered.length} swap{filtered.length !== 1 ? 's' : ''} found
+            </p>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
+              gap: 20,
+            }}>
               {filtered.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

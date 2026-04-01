@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 
     // Analyse ingredients with Claude
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-haiku-20241022',
+      model: 'claude-haiku-4-5',
       max_tokens: 1024,
       messages: [
         {
@@ -105,12 +105,54 @@ Rules:
     if (!jsonMatch) throw new Error('Invalid analysis response')
     const analysis = JSON.parse(jsonMatch[0])
 
-    // Find clean alternatives from our database
-    const category = productData.categories_tags?.[0]?.replace('en:', '') || 'Cleaning'
-    const { data: alternatives } = await supabase
-      .from('products')
-      .select('*')
-      .limit(3)
+    // Map Open Food Facts category tags to our DB categories
+    const categoryTags: string[] = productData.categories_tags || []
+    const categoryMap: Record<string, string> = {
+      'personal-care': 'Bathroom',
+      'beauty': 'Bathroom',
+      'cosmetics': 'Bathroom',
+      'hair-care': 'Bathroom',
+      'skin-care': 'Bathroom',
+      'oral-care': 'Bathroom',
+      'deodorants': 'Bathroom',
+      'cleaning': 'Cleaning',
+      'household-cleaning': 'Cleaning',
+      'cleaning-products': 'Cleaning',
+      'laundry': 'Laundry',
+      'laundry-detergents': 'Laundry',
+      'baby': 'Baby',
+      'baby-care': 'Baby',
+      'baby-food': 'Baby',
+      'kitchen': 'Kitchen',
+      'beverages': 'Kitchen',
+      'food': 'Kitchen',
+      'snacks': 'Kitchen',
+    }
+    let dbCategory: string | null = null
+    for (const tag of categoryTags) {
+      const key = tag.replace('en:', '').toLowerCase()
+      if (categoryMap[key]) { dbCategory = categoryMap[key]; break }
+    }
+
+    // Find clean alternatives — filter by category, fall back to top-rated if none found
+    let alternatives = null
+    if (dbCategory) {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category', dbCategory)
+        .order('rating', { ascending: false })
+        .limit(3)
+      alternatives = data
+    }
+    if (!alternatives || alternatives.length === 0) {
+      const { data } = await supabase
+        .from('products')
+        .select('*')
+        .order('rating', { ascending: false })
+        .limit(3)
+      alternatives = data
+    }
 
     return NextResponse.json({
       productName,
